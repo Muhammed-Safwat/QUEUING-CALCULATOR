@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queuing calculator</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <div class="section-title">
+        <h2>Queues</h2>
+        <h1 class="main-heading">Queuing calculator</h1>
+      </div>
+    <div class="app">
+        <div class="filters">
+            <div class="mode">
+                <div class="choice choice--active" data-type="dd1k">D / D / 1 / k-1</div>
+                <div class="choice" data-type="mm1">M / M / 1</div>
+                <div class="choice" data-type="mm1k">M / M / 1 / K</div>
+                <div class="choice" data-type="mmc">M / M / C</div>
+                <div class="choice" data-type="mmck">M / M / C / K</div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="cont">
+                <h4 class="type">D / D / 1 / k-1</h4>
+            <div class="calc"> 
+                <div class="inputs">
+                    <div class="input">
+                        <label for="arrival" class="input__title">Arrival time (1/&lambda;)</label>
+                        <input type="number" name="arrival" id="arrival" placeholder="0" class="input__field" min="0">
+                    </div>
+                    <div class="input">
+                        <label for="service" class="input__title">Service time (1/&mu;)</label>
+                        <input type="number" name="arrival" id="service" placeholder="0" class="input__field" min="0">
+                    </div>
+                    <div class="horiz">
+                        <div class="input">
+                            <label for="max" class="input__title">Maximum customer (K-1)</label>
+                            <input type="number" name="arrival" id="max" placeholder="0" class="input__field" min="0">
+                        </div>
+                        <div class="input">
+                            <label for="init" class="input__title">Initial Customer (M)</label>
+                            <input type="number" name="arrival" id="init" placeholder="0" class="input__field" min="0">
+                        </div>
+                    </div>
+                    <button class="calc-btn">Calculate</button>
+                </div>
+                <div class="output">
+                    <div class="customer-number">
+                        <div class="result-header">
+                            <h2 class="secondary-heading">Number of customer n(t) </h2>
+                             
+                        </div>
+                        <div class="result-customer">
+                            <div class="result">
+                                <div class="result__title">t &#x2264; 1/<span class="lambda">&lambda;</span></div>
+                                <div class="result__value">0</div>
+                            </div>
+                            <div class="result">
+                                <div class="result__title">1/<span class="lambda">&lambda;</span> &#x3c; t &#x2264;
+                                    <span class="ti">t<sub>i</sub></span>
+                                </div>
+                                <div class="result__value">[<span class="lambda">&lambda;</span>t] - [<span
+                                        class="mu">&mu;</span>t - <span class="mu">&mu;</span>/<span
+                                        class="lambda">&lambda;</span>]</div>
+                            </div>
+                            <div class="result">
+                                <div class="result__title">t &gt; <span class="ti">t<sub>i</sub></span></div>
+                                <div class="result__value k-1">k - 1</div>
+                            </div>
+                        </div>
+                    </div>
+                     
+                    <div class="waiting time">
+                        <div class="result-header">
+                            <h2 class="secondary-heading">Waiting time W<sub>q</sub>(t) </h2>
+                             
+                        </div>
+                        <div class="result-waiting">
+                            <div class="result">
+                                <div class="result__title">n &#x3c; <span class="lambda">&lambda;</span>t<sub>i</sub></div>
+                                <div class="result__value">[1/<span class="mu">&mu;</span> - 1/<span
+                                        class="lambda">&lambda;</span>](n - 1)</div>
+                            </div>
+                            <div class="result">
+                                <div class="result__title">n &#x2265; <span class="lambda-ti">&lambda;t<sub>i</sub></span>
+                                </div>
+                                <div class="result__value">[1/<span class="mu">&mu;</span> - 1/<span
+                                        class="lambda">&lambda;</span>](<span class="lambda-ti">&lambda;</span><span
+                                        class="ti">t<sub>i</sub></span> - 2)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>  
+</body>
+
+</html>
