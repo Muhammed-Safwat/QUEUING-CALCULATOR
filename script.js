@@ -15,6 +15,9 @@ let activeChoice = mode.querySelector(".choice--active");
 const output = document.querySelector(".output");
 const outputCustomer = document.querySelector(".result-customer");
 const outputWaiting = document.querySelector(".result-waiting");
+const tiValue = document.querySelector(".ti-value");
+const ntValue = document.querySelector(".nt-value");
+const wqValue = document.querySelector(".wq-value");
 
 // Reset all input
 const resetInputs = () =>
@@ -56,6 +59,7 @@ arrivalTime.addEventListener("keyup", (e) => {
 
   cases();
 });
+
 serviceTime.addEventListener("keyup", (e) => {
   const mu = 1 / serviceTime.value;
 
@@ -65,10 +69,8 @@ serviceTime.addEventListener("keyup", (e) => {
 mode.addEventListener("click", (e) => {
   const choice = e.target;
   if (!choice.classList.contains("choice")) return;
-
   const type = choice.dataset.type;
   let title = document.querySelector('.type');
-  console.log(e.target.textContent)
   title.innerHTML=e.target.textContent;
   activeChoice.classList.remove("choice--active");
   choice.classList.add("choice--active");
@@ -178,6 +180,8 @@ function dd1k() {
   const InitIn = initCustomer.closest(".input");
   maxInit.classList.remove("invisible");
   InitIn.classList.remove("invisible");
+  maxInit.classList.remove("none");
+  maxInit2.classList.remove("none");
   maxCustomer.closest(".input").querySelector(".input__title").textContent =
     "Maximum customer (K - 1)";
   InitIn.querySelector(".input__title").textContent = "Initial Customer (M)";
@@ -186,8 +190,8 @@ function dd1k() {
   serviceTime.closest(".input").querySelector(".input__title").textContent =
     "Service rate (1/μ)";
 
-    //document.querySelector('.customers').classList.remove("none");
-    //document.querySelector('.time').classList.remove("none");
+    document.querySelector('.customers').classList.remove("none");
+    document.querySelector('.time').classList.remove("none");
     document.querySelector('.inputs').classList.remove("inputs_2");
     calcBtn.classList.remove("btn-fill");
     maxInit2.classList.remove("invisible");
@@ -197,13 +201,15 @@ function mm1() {
   resetInputs();
   maxInit.classList.add("invisible");
   maxInit2.classList.add("invisible");
+  maxInit.classList.add("none");
+  maxInit2.classList.add("none");
   arrivalTime.closest(".input").querySelector(".input__title").textContent =
     "Mean arrival rate (λ)";
   serviceTime.closest(".input").querySelector(".input__title").textContent =
     "Mean service rate (μ)";
 
-    // document.querySelector('.customers').classList.add("none");
-    // document.querySelector('.time').classList.add("none");
+   document.querySelector('.customers').classList.add("none");
+    document.querySelector('.time').classList.add("none");
     document.querySelector('.inputs').classList.add("inputs_2");
     calcBtn.classList.add("btn-fill");
 }
@@ -220,9 +226,9 @@ function mm1k() {
     "Mean arrival rate (λ)";
   serviceTime.closest(".input").querySelector(".input__title").textContent =
     "Mean service rate (μ)";
-    /*
+  
     document.querySelector('.customers').classList.add("none");
-    document.querySelector('.time').classList.add("none");*/
+    document.querySelector('.time').classList.add("none");
     document.querySelector('.inputs').classList.add("inputs_2");
     calcBtn.classList.add("btn-fill");
 }
@@ -293,6 +299,13 @@ function result(title, value) {
           </div>`;
 }
 
+function result2(title, value) {
+  return `<div class=" result flex-result">
+              <div class="result__title">${title}</div>
+              <div class="result__value">${value}</div>
+          </div>`;
+}
+
 function updateDD1() {
   const lambda = (1 / arrivalTime.value).toFixed(3);
   const mu = (1 / serviceTime.value).toFixed(3);
@@ -301,7 +314,16 @@ function updateDD1() {
   const ti = calcTi(lambda, mu, k);
   const tiFromM = calcTiForM(lambda, mu, m);
   let customer, waiting;
-
+  let tt ="?"; 
+  let customerNumber = document.querySelector("#customer__number");
+  let time = document.querySelector("#time");
+  let tvalue =time.value , cvalue = parseInt(customerNumber.value); 
+  tvalue=parseInt(tvalue);
+  console.log(tvalue);
+  console.log(cvalue);
+   
+  let ntt = "";
+  let wqn="";
   if (lambda > mu) {
     customer =
       result(`t &#x2264; ${arrivalTime.value}`, `0`) +
@@ -311,6 +333,23 @@ function updateDD1() {
       ) +
       result(`t &gt; ${ti}`, k);
 
+      if(!tvalue){
+         
+        ntt="?";
+      }else if(tvalue <= arrivalTime.value){
+        ntt=0;
+        console.log("case1",ntt ,arrivalTime.value, tvalue)
+
+      }else if(tvalue >= ti){
+        ntt=k;
+        console.log("case2", ntt , tvalue)
+        
+      }else{
+        ntt = Math.floor(lambda * parseInt(tvalue) )  -  Math.floor((mu*parseInt(tvalue) ) - (mu / lambda));
+        console.log("case3", ntt , tvalue);
+        
+      }
+        
     waiting =
       result(
         `n &#x3c; ${lambda * ti}`,
@@ -320,10 +359,25 @@ function updateDD1() {
         `n &#x2265; ${lambda * ti}`,
         `${(serviceTime.value - arrivalTime.value) * (lambda * ti - 2)}`
       );
+      if(cvalue > 0  && cvalue<lambda * ti){
+        wqn=(serviceTime.value - arrivalTime.value)*(cvalue - 1);
+      }else if(cvalue>=lambda * ti) {
+        wqn=(serviceTime.value - arrivalTime.value) * (lambda * ti - 2)
+      }else if (cvalue==0){
+        wqn=0;
+      }else  {
+        wqn="?";
+      }
+      tt = ti ;
+      
   } else {
     customer =
       result(`t &#x3c; ${tiFromM}`, `${m} + [${lambda}t] - [${mu}t]`) +
-      result(`t &#x2265; ${tiFromM}`, `1, 0`);
+      result(`t &#x2265; ${tiFromM}`, `1, 0`) ;
+      
+      ntt = parseInt(m) + parseInt( lambda * parseInt(tvalue)  -    mu * parseInt(tvalue) );
+      if(ntt<0) ntt*=-1;
+        console.log(ntt , time.vlaue)
 
     waiting =
       result(`n = 0`, ((m - 1) / 2) * mu) +
@@ -332,8 +386,31 @@ function updateDD1() {
         `${serviceTime.value}(${m - 1} + n) - ${arrivalTime.value}n`
       ) +
       result(`n &#x2265; ${lambda * tiFromM}`, 0);
+      tt = tiFromM;
+      if(cvalue===0){
+        wqn= ((m - 1) / 2) * mu;
+      }else if(cvalue < lambda * tiFromM){
+        console.log("wqn < " ,lambda * tiFromM)
+        wqn = (serviceTime.value * ((m - 1) + cvalue) - (arrivalTime.value)*cvalue);
+      }else {
+        wqn=0;
+      }
   }
 
+   if(!time.value){
+    console.log(time.value);
+    tvalue="t";
+   }
+   if(!customerNumber.value){
+    console.log(customerNumber.value);
+    cvalue="n";
+   }
+   if(Number.isNaN(wqn)){
+    wqn="?"
+   }
+   if(Number.isNaN(ntt)){
+    ntt="?"
+   }
   output.innerHTML = `<div class="customer-number">
                     <div class="result-header">
                         <h2 class="secondary-heading">Number of customer n(t)</h2>
@@ -348,6 +425,20 @@ function updateDD1() {
                         <input type="number" name="arrival" id="waiting-time" placeholder="wq(t)" class="input__field input-waiting" min="0" disabled="">
                     </div>
                     <div class="result-waiting">${waiting}</div>
+                </div>
+
+                <div class="output-number">
+                <div class="result">
+                    <div class="result__title">ti = </div>
+                    <div class="result__value ti-value">${tt}</div>
+                </div>
+                <div class="result">
+                    <div class="result__title">n(${tvalue}) = </div>
+                    <div class="result__value nt-value">${ntt}</div>
+                </div>
+                <div class="result">
+                    <div class="result__title">W(${cvalue}) = </div>
+                    <div class="result__value wn-vlaue">${wqn}</div>
                 </div>`;
   // outputCustomer.innerHTML = customer;
   // outputWaiting.innerHTML = waiting;
