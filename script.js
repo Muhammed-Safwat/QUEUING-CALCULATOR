@@ -7,6 +7,7 @@ const initCustomer = document.querySelector("#init");
 const numCustomer = document.querySelector("#num-customer");
 const waitingTime = document.querySelector("#waiting-time");
 const maxInit = document.querySelector(".horiz");
+const maxInit2 = document.querySelector(".horiz2");
 const inputs = document.querySelectorAll(".input");
 const mode = document.querySelector(".mode");
 const calcBtn = document.querySelector(".calc-btn");
@@ -184,21 +185,34 @@ function dd1k() {
     "Arrival rate (1/λ)";
   serviceTime.closest(".input").querySelector(".input__title").textContent =
     "Service rate (1/μ)";
+
+    //document.querySelector('.customers').classList.remove("none");
+    //document.querySelector('.time').classList.remove("none");
+    document.querySelector('.inputs').classList.remove("inputs_2");
+    calcBtn.classList.remove("btn-fill");
+    maxInit2.classList.remove("invisible");
 }
 
 function mm1() {
   resetInputs();
   maxInit.classList.add("invisible");
+  maxInit2.classList.add("invisible");
   arrivalTime.closest(".input").querySelector(".input__title").textContent =
     "Mean arrival rate (λ)";
   serviceTime.closest(".input").querySelector(".input__title").textContent =
     "Mean service rate (μ)";
+
+    // document.querySelector('.customers').classList.add("none");
+    // document.querySelector('.time').classList.add("none");
+    document.querySelector('.inputs').classList.add("inputs_2");
+    calcBtn.classList.add("btn-fill");
 }
 
 function mm1k() {
   resetInputs();
 
   maxInit.classList.remove("invisible");
+  maxInit2.classList.remove("invisible");
   initCustomer.closest(".input").classList.add("invisible");
   maxCustomer.closest(".input").querySelector(".input__title").textContent =
     "Maximum customer (K)";
@@ -206,6 +220,11 @@ function mm1k() {
     "Mean arrival rate (λ)";
   serviceTime.closest(".input").querySelector(".input__title").textContent =
     "Mean service rate (μ)";
+    /*
+    document.querySelector('.customers').classList.add("none");
+    document.querySelector('.time').classList.add("none");*/
+    document.querySelector('.inputs').classList.add("inputs_2");
+    calcBtn.classList.add("btn-fill");
 }
 
 function mmc() {
@@ -318,7 +337,7 @@ function updateDD1() {
   output.innerHTML = `<div class="customer-number">
                     <div class="result-header">
                         <h2 class="secondary-heading">Number of customer n(t)</h2>
-                         
+                        <input type="number" name="arrival" id="num-customer" placeholder="n(t)" class="input__field input-customer" min="0" disabled="">
                     </div>
                     <div class="result-customer">${customer}</div>
                 </div>
@@ -326,7 +345,7 @@ function updateDD1() {
                 <div class="waiting time">
                     <div class="result-header">
                         <h2 class="secondary-heading">Waiting time W<sub>q</sub>(t) </h2>
-                         
+                        <input type="number" name="arrival" id="waiting-time" placeholder="wq(t)" class="input__field input-waiting" min="0" disabled="">
                     </div>
                     <div class="result-waiting">${waiting}</div>
                 </div>`;
@@ -340,7 +359,7 @@ function updateMM1() {
 
   output.innerHTML =
     result("L", lambda / (mu - lambda)) +
-    result("L<sub>q</sub>", (lambda * lambda) / (mu - lambda)) +
+    result("L<sub>q</sub>", (lambda * lambda) / (mu *(mu - lambda))) +
     result("W", 1 / (mu - lambda)) +
     result("W<sub>q</sub>", lambda / (mu * (mu - lambda)));
 }
